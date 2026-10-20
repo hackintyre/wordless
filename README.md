@@ -14,7 +14,7 @@ Wordless is an offline-first desktop writing app. DOCX remains the primary edita
 
 ## Build on Windows
 
-1. Install Python 3.10+ and ensure the Python launcher (`py`) is available.
+1. Install Python 3.10+ and ensure the Python launcher (`py`) is available. - https://www.python.org/downloads/windows/
 2. Run `build_windows.bat`.
 3. The dependency checker reports which required packages are already compatible and installs only missing or incompatible packages. It no longer upgrades pip on every run.
 4. Launch `dist\Wordless.exe`.
