@@ -2,6 +2,14 @@
 
 Wordless is an offline-first desktop writing app. DOCX remains the primary editable document format.
 
+## Windows Installation
+
+1. Install Python 3.10+ - https://www.python.org/downloads/windows/
+2. Download the Wordless_1.0.6_Source.zip file, Extract all
+3. Open this and run `build_windows.bat` via double-click. Leave window open until you see "Press any key to continue"
+5. You will now see additional folders. Enter `dist` folder and launch `Wordless.exe`.
+6. You can copy this `Wordless.exe` file to your desktop for ease of launch, and also pin to your taskbar when the program is open via right-click on taskbar icon.
+
 ## Features
 
 - **DOCX editing:** basic text formatting, headings, alignment, and local document saving.
@@ -12,15 +20,6 @@ Wordless is an offline-first desktop writing app. DOCX remains the primary edita
 - **Personal background:** use Themes… to choose a local photo and adjust the overall backdrop and theme blends. The selected path and settings persist across restarts. The photo is blended into the backdrop and side gutters; writing text remains on a solid high-contrast surface for legibility.
 - **Writing Companion:** offline prompt templates and revision checklists. These do not use a cloud AI service.
 
-## Build on Windows
-
-1. Install Python 3.10+ and ensure the Python launcher (`py`) is available. - https://www.python.org/downloads/windows/
-2. Run `build_windows.bat`.
-3. The dependency checker reports which required packages are already compatible and installs only missing or incompatible packages. It no longer upgrades pip on every run.
-4. Launch `dist\Wordless.exe`.
-
-Version: **1.0.4**. The build uses PyInstaller's `--collect-all pymupdf` option to include PyMuPDF's package resources, including the layout YAML file that some newer releases require at startup. If that resource was previously omitted from the executable, rebuild using this updated script.
-
 ## Local settings and privacy
 
 Wordless stores recent file paths and theme/background settings locally under `%APPDATA%\Wordless` on Windows, or `~/.config/Wordless` on Linux/macOS. The selected background photo stays at its original local path; Wordless does not upload it.
@@ -30,26 +29,20 @@ Wordless stores recent file paths and theme/background settings locally under `%
 - DOCX formatting is supported, but Wordless is not a complete Microsoft Word replacement and may not preserve every advanced DOCX feature.
 - PDF is view-only. PDF annotations, form editing, OCR, and PDF export are not supported. If the PDF library cannot initialize, Wordless still starts and delegates PDF opening to the operating system's default viewer.
 
+## Version History
 
 ### Version 1.0.3
-
 - Autumn document outline text uses larger cream-colored labels for contrast.
 - The Home landing page follows the currently selected theme instead of retaining Retro colors.
 - Renamed the recent-files section to **JUMP BACK IN**.
 - The landing greeting randomly cycles through ten short greetings at startup.
-
-
-### Version 1.0.3
 - Improved Autumn contrast for font controls, document outline, and Themes button.
 - Added a reset action in Themes to clear the personal background image and restore default background blend settings.
-- Resetting applies the selected theme’s standard colors.
-- Updated landing-page footer text to follow the active theme.
 
 ### Version 1.0.6
 - Removed the decorative subtitle above the rotating welcome greeting.
 - Rebuilds recent-file rows and separators on theme changes to remove stale Retro-purple dividers from other themes.
 - Improved Autumn outline-link contrast.
-
 
 ## Wordless 1.0.6
 - Improved Autumn theme contrast in the Themes window, including slider labels and background path text.
