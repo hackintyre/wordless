@@ -1,5 +1,3 @@
-WINDOWS ASAR REPAIR: see ASAR_WINDOWS_FIX.txt and ASAR_FIX_VALIDATION.txt. Normal builds now run 3 focused checks. Earlier full-suite totals below are historical, not current repair validation.
-
 # Wordless 2.1.0
 
 Offline desktop writing studio — source and automated Windows build kit.
@@ -10,10 +8,6 @@ Offline desktop writing studio — source and automated Windows build kit.
 2. Double-click `BUILD_WORDLESS_EXE.bat`. Keep internet connected for dependency/build-tool downloads.
 3. Wait for SUCCESS. Run the newly produced `Wordless.exe` beside the batch file.
 4. Test on copies of documents, then disconnect networking and test again.
-
-The existing batch launcher is retained byte-for-byte. It prepares local Node, installs pinned direct dependencies, runs checks/tests and builds a portable Electron app. End users of the resulting EXE do not need Node, Python, an account, or internet. This is not an offline *build* kit. Windows ARM64/32-bit, older Windows, Linux and macOS are not supported build targets here. An optional NSIS target remains available to maintainers.
-
-The capital W icon is generated locally from Windows Georgia, matching the text-only logo. EXE resource editing is enabled; there is no signing certificate. Windows build helpers may require downloads, and SmartScreen or managed-device policy may block unsigned releases. Do not bypass security policy. Georgia must be available; no replacement font is silently downloaded. A package-lock.json is now included, generated from these exact package versions. The build uses npm ci; dependency upgrades still need separate review.
 
 ## What's new in 2.1.0
 
