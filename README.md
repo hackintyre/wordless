@@ -1,50 +1,67 @@
-# Wordless 1.0.6
+WINDOWS ASAR REPAIR: see ASAR_WINDOWS_FIX.txt and ASAR_FIX_VALIDATION.txt. Normal builds now run 3 focused checks. Earlier full-suite totals below are historical, not current repair validation.
 
-Wordless is an offline-first desktop writing app. DOCX remains the primary editable document format.
+# Wordless 2.1.0
 
-## Windows Installation
+Offline desktop writing studio — source and automated Windows build kit.
+**This archive does not contain a precompiled EXE.**
 
-1. Install Python 3.10+ - https://www.python.org/downloads/windows/
-2. Download the Wordless_1.0.6_Source.zip file, Extract all
-3. Open this and run `build_windows.bat` via double-click. Leave window open until you see "Press any key to continue"
-5. You will now see additional folders. Enter `dist` folder and launch `Wordless.exe`.
-6. You can copy this `Wordless.exe` file to your desktop for ease of launch, and also pin to your taskbar when the program is open via right-click on taskbar icon.
+## Build and run
+1. Extract the ZIP to a NEW local folder on Windows 10/11 x64 (Intel/AMD).
+2. Double-click `BUILD_WORDLESS_EXE.bat`. Keep internet connected for dependency/build-tool downloads.
+3. Wait for SUCCESS. Run the newly produced `Wordless.exe` beside the batch file.
+4. Test on copies of documents, then disconnect networking and test again.
 
-## Features
+The existing batch launcher is retained byte-for-byte. It prepares local Node, installs pinned direct dependencies, runs checks/tests and builds a portable Electron app. End users of the resulting EXE do not need Node, Python, an account, or internet. This is not an offline *build* kit. Windows ARM64/32-bit, older Windows, Linux and macOS are not supported build targets here. An optional NSIS target remains available to maintainers.
 
-- **DOCX editing:** basic text formatting, headings, alignment, and local document saving.
-- **Simple workspace:** removed the Insert and Layout ribbon tabs, Read Mode, and nonfunctional page margin/page size controls for this 1.0 release. Printing is available from the File tab.
-- **PDF reading:** choose a PDF from File > Open. PDF pages open in a separate read-only viewer; Wordless does not edit PDFs. PyMuPDF and Pillow are included in requirements for the built-in viewer.
-- **Persistent recent files:** recent DOCX, text, and PDF paths are stored locally in the Wordless configuration directory.
-- **Themes:** Autumn (pixel leaves), Galaxy (white star clusters), Enchanted Forest (fireflies), Snowy (falling snow), and Retro (dark purple and pink neon with vertical Matrix-inspired binary streams).
-- **Personal background:** use Themes… to choose a local photo and adjust the overall backdrop and theme blends. The selected path and settings persist across restarts. The photo is blended into the backdrop and side gutters; writing text remains on a solid high-contrast surface for legibility.
-- **Writing Companion:** offline prompt templates and revision checklists. These do not use a cloud AI service.
+The capital W icon is generated locally from Windows Georgia, matching the text-only logo. EXE resource editing is enabled; there is no signing certificate. Windows build helpers may require downloads, and SmartScreen or managed-device policy may block unsigned releases. Do not bypass security policy. Georgia must be available; no replacement font is silently downloaded. A package-lock.json is now included, generated from these exact package versions. The build uses npm ci; dependency upgrades still need separate review.
 
-## Local settings and privacy
+## What's new in 2.1.0
 
-Wordless stores recent file paths and theme/background settings locally under `%APPDATA%\Wordless` on Windows, or `~/.config/Wordless` on Linux/macOS. The selected background photo stays at its original local path; Wordless does not upload it.
+### Local version history
+File → Version history opens timestamped snapshots with a formatted, read-only preview and Restore selected. Snapshot now makes a manual version. Automatic versions are taken after idle recovery saves, at most once per minute, and before save, replacing text, opening/new-document operations with dirty content, and history restore.
 
-## Limitations
+Defaults: 30 days, 50 snapshots per document, 64 MB total history. The panel exposes days (1–365), snapshots/document (2–500) and total storage MB (8–512), plus current usage. Applying smaller limits prunes oldest/expired entries; pruning is irreversible. Limits apply to the combined history JSON, not to user documents, recovery files or sibling backups. An oversized individual snapshot is rejected explicitly. A corrupt history file fails closed rather than being silently replaced.
 
-- DOCX formatting is supported, but Wordless is not a complete Microsoft Word replacement and may not preserve every advanced DOCX feature.
-- PDF is view-only. PDF annotations, form editing, OCR, and PDF export are not supported. If the PDF library cannot initialize, Wordless still starts and delegates PDF opening to the operating system's default viewer.
+History is stored locally under the app's user-data directory. Saved documents are associated with their local paths; first save migrates the draft history, and Save As copies saved-document history while keeping the original's versions. Renaming a document outside the app does not automatically migrate its path association. Unsaved draft identity is persisted between launches, but creating a new draft starts a new identity. Restoring a version preserves the active file association, snapshots the current content first, and leaves restored content UNSAVED until you save it. Snapshot restore is not guaranteed to be a native Undo action; use history to return to the pre-restore version.
 
-## Version History
+### Find and Replace
+The persistent Find panel has up/down navigation, wraparound, match count, case-sensitive and Unicode-aware whole-word options, and optional highlight-all using Chromium's CSS Highlight API. Highlight markup is not inserted into documents. Enter/F3 goes forward; Shift+Enter/Shift+F3 goes backward.
 
-### Version 1.0.3
-- Autumn document outline text uses larger cream-colored labels for contrast.
-- The Home landing page follows the currently selected theme instead of retaining Retro colors.
-- Renamed the recent-files section to **JUMP BACK IN**.
-- The landing greeting randomly cycles through ten short greetings at startup.
-- Improved Autumn contrast for font controls, document outline, and Themes button.
-- Added a reset action in Themes to clear the personal background image and restore default background blend settings.
+Preview replace and Preview replace all show the count and context (up to 50 preview lines). Applying requires an unchanged document revision, first makes a safety snapshot and commits the group with one native insertHTML edit transaction. Unchanged formatting and explicit page breaks are carried through a cloned DOM; inserted replacement text uses the browser's surrounding formatting. Cross-style/cross-paragraph replacements can necessarily merge or alter the replaced structure. Use the preview, native Undo and safety snapshot; actual browser undo grouping and complex rich-text edge cases still require Windows acceptance testing. Replacement is literal, not regex.
 
-### Version 1.0.6
-- Removed the decorative subtitle above the rotating welcome greeting.
-- Rebuilds recent-file rows and separators on theme changes to remove stale Retro-purple dividers from other themes.
-- Improved Autumn outline-link contrast.
+### Safer document I/O
+Before any overwrite, the exact previous file is copied to a timestamped sibling named `filename.wordless-backup-...`. If backup fails, overwrite is aborted. These backups are intentionally NOT automatically deleted or counted against the history cap; review disk usage and manage them separately. File writes still use the existing temporary-file/rename path. Backups and snapshots are not substitutes for external backups and do not guarantee protection against drive failure.
 
-## Wordless 1.0.6
-- Improved Autumn theme contrast in the Themes window, including slider labels and background path text.
-- Snowy Writing Companion now uses dark text on light surfaces for readability.
-- Snow animation now uses small, fluffy pixel-art snow clusters.
+DOCX import warns about approximation, omitted complex layout/images/headers/footers and source preservation. Native sanitization changes and plain-text limitations are explained. Saving DOCX/TXT still warns about conversion loss. Native `.wordless` is recommended for supported formatting, page breaks and bookmark metadata. DOCX conversion remains approximate; automatic Word pagination and complex layouts are not promised.
+
+### Focus / typewriter mode
+The bottom-right toggle, beside the page/view controls, hides header/ribbons/sidebar while leaving the paper's dimensions and margins unchanged. The caret is kept near 45% of the visible writing area during typing/navigation. Toggle it off to return to the full interface. This is a viewport mode, not a document-formatting change.
+
+### Session goals and local statistics
+Opening or creating a document presents an optional goal/timer question. Choose Set a goal / timer to expand the sidebar panel, or Not now to collapse it. Start/reset begins a session with an optional words-to-add target. The timer pauses when the document workspace is hidden or the app is minimized. The panel shows elapsed visible seconds, net words added and goal completion; lifetime totals are local only.
+
+Statistics are checkpointed every 15 seconds with an idempotent session ID. Document switches and session reset also flush them. A crash/forced exit may lose the last checkpoint interval; shutdown IPC is best effort. Word counts are net additions, not a keystroke counter, and edits/deletions are not a detailed analytics history. Session settings/progress are not resumed after restarting the app. The optional launch prompt applies to New/Open, not to simply returning from the landing page to the same active document.
+
+### Outline, bookmarks and collapsible sections
+Headings 1–4 are indented by level; each has a navigation button and expand/collapse arrow. Collapsing hides following sibling blocks through the next equal/higher-level heading and hides descendant outline rows. This view-only state is removed from snapshots/exports and expanded for print. Counts include collapsed text; Find reveals folded content. Section collapse is intended for top-level heading blocks; deeply nested imported headings do not collapse arbitrary wrappers.
+
+Bookmark selection attaches a named bookmark to the containing top-level block. The bookmark list can navigate/remove it. Bookmarks persist in native files and snapshots; TXT and DOCX are not promised to retain custom bookmark metadata. This is block-level bookmarking, not multiple arbitrary range bookmarks within one paragraph.
+
+## Preserved features
+The text-only logo still opens the landing page without clearing the active document. Selected-text colour application and reset remain. Autumn retains shaded oval/pointed/maple sprites, smooth perspective flutter and bottom-to-top lifecycle. Stars remain stationary, visibly glimmer on 8–10 second cycles with gradient/flares, and retain occasional 0.22–0.34 second side-sky shooting stars at random 22–55 second intervals. No remote animation/font assets or services were added.
+
+## Privacy, validation and limitations
+History, recovery, bookmarks and statistics are unencrypted local data. User-data files remain after deleting the portable EXE. Files stored in a cloud-synced directory are outside the app's network restrictions. Renderer CSP denies connections and the Electron local-protocol allowlist remains; no new external service is used. A certified air-gap claim requires real Windows network monitoring.
+
+The corrected build kit passed 53 automated tests with zero failures and zero skipped tests, including all three real DOCX integration tests, using the pinned converter packages. Syntax checks and electron-builder configuration-schema validation passed. Tests cover real filesystem history/pruning/backups, session checkpoints, search matching, fixtures and mock-DOM selection/find behaviour. No Windows/Electron GUI, EXE build, PowerShell execution, icon resource stamping, actual replacement undo, native picker or performance validation ran here. Real DOCX converter integration did run. Packaged-source verification was exercised with an ASAR and synthetic PE fixtures, NOT an actual Windows build. The Windows build installs required converters and runs the integration tests. See `validation.txt`, `TESTING.md`, and the included fixtures. Keep original documents and validate the Windows build before relying on it for important work.
+
+## Corrected 2.1.0 build kit
+A release-blocking DOCX issue was reproduced after installing the pinned conversion dependencies: html-to-docx 1.8.0 drops semantic `<em>` italic styling, so the formatted fixture test failed and the build stopped before creating dist. The export bridge now converts equivalent `<em>` tags to `<i>` only for DOCX conversion. The test was NOT removed or weakened. A further integration test covers semantic, literal, nested and uppercase italic tags.
+
+The exact cause on an individual PC still requires its build log; this was a confirmed reproducible blocker in the old kit. The pinned Node ZIP checksum was rechecked against nodejs.org's official SHA-256 manifest.
+
+The batch filename and bytes remain unchanged. The PowerShell pipeline now records raw child-command output to Wordless-build-steps.log, identifies the failing stage in Wordless-build-status.json and requires DOCX tests rather than allowing them to skip. After packaging it validates the portable launcher PE, x64 application PE, app version and packaged source equality before copying the verified portable EXE beside the batch file. NSIS portable launchers may be x86 even with an x64 app payload; this is explicitly supported by the validator. The Windows CI workflow runs the same checked pipeline.
+
+All 11 other runtime files are byte-identical to the previous 2.1.0 source. Version history, Find/Replace, focus/typewriter, session goals/statistics, outline/bookmarks, offline controls and animation code were not removed or rewritten. See FEATURE_PRESERVATION.json for the source comparison.
+
+Extract the corrected ZIP into a NEW local folder, then run BUILD_WORDLESS_EXE.bat. A successful build should produce dist/Wordless.exe, dist/win-unpacked/Wordless.exe, dist/Wordless-build-verification.json, Wordless.exe beside the batch file and Wordless.exe.sha256. The source ZIP deliberately contains no fabricated dist folder or precompiled EXE. If it still fails, provide both Wordless-build.log and Wordless-build-steps.log plus Wordless-build-status.json; do not disable security policy or run an old EXE as this release.
